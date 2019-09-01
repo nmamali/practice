@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { ModalPagePage } from './modal-page.page';
 import {MaterialModule} from 'src/app/material.module';
+import {MatCheckboxModule} from '@angular/material';
 
 const routes: Routes = [
   {
