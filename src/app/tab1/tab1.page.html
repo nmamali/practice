@@ -1,41 +1,72 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Tab One
+     Digital Menu
     </ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <ion-card class="welcome-card">
-      <img src="/assets/shapes.svg" alt="" />
-      <ion-card-header>
-        <ion-card-subtitle>Get Started</ion-card-subtitle>
-        <ion-card-title>Welcome to Ionic</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>Now that your app has been created, you'll want to start building out features and components. Check out some of the resources below for next steps.</p>
-      </ion-card-content>
-    </ion-card>
-    <ion-list lines="none">
-      <ion-list-header>
-        <ion-label>Resources</ion-label>
-      </ion-list-header>
-      <ion-item href="https://ionicframework.com/docs/">
-        <ion-icon slot="start" color="medium" name="book"></ion-icon>
-        <ion-label>Ionic Documentation</ion-label>
-      </ion-item>
-      <ion-item href="https://ionicframework.com/docs/building/scaffolding">
-        <ion-icon slot="start" color="medium" name="build"></ion-icon>
-        <ion-label>Scaffold Out Your App</ion-label>
-      </ion-item>
-      <ion-item href="https://ionicframework.com/docs/layout/structure">
-        <ion-icon slot="start" color="medium" name="grid"></ion-icon>
-        <ion-label>Change Your App Layout</ion-label>
-      </ion-item>
-      <ion-item href="https://ionicframework.com/docs/theming/basics">
-        <ion-icon slot="start" color="medium" name="color-fill"></ion-icon>
-        <ion-label>Theme Your App</ion-label>
-      </ion-item>
-    </ion-list>
+
+  <ion-row no-padding no-margin>
+    <ion-searchbar >
+    </ion-searchbar>
+  </ion-row>
+  <ion-row style="background-color: whitesmoke;border-width: 1px !important;" no-padding no-margin>
+  <ion-card style="margin: 11px; " >
+    <ion-slides style="max-height: 400px;" [options]="slideOpts">
+      <ion-slide *ngFor="let slide of meals" no-padding no-margin>
+        <img [src]="slide.url" no-padding no-margin>
+        <h4 class="ion-text-center centered-slider" style="color: white; background: rgba(0,0,0,0.3) !important; width: 100%;"><b></b></h4>
+        <h1 class="ion-text-center centered2" style="color: white;"><b>{{slide.title}}</b><br/>
+        </h1>
+
+
+
+      </ion-slide>
+
+      <div class="icon">
+        <ion-badge color="primary">
+        </ion-badge>
+      </div>
+
+    </ion-slides>
+
+  </ion-card >
+  </ion-row>
+  <ion-row style="padding: 10px"  no-margin>
+        <ion-col size=12 align-self-start class="ion-text-center" ><h4>Our Meal Category</h4></ion-col>
+  </ion-row>
+  <ion-row no-margin style="padding: 10px" no-padding>
+        <ion-col size="6" *ngFor="let meal of mealsCatergory" no-padding >
+          <div class="test">
+          <ion-card no-margin no-padding style="border-radius: 0px" (click)="visitPage(meal)">
+            <img [src]="meal.url" style="max-height: 200px !important;"  >
+            <div style="margin-left: 11px !important">
+              <h4 class="ion-text-center centered-slider" style="color: white; background: rgba(0,0,0,0.7) !important; width: 100%;"><b></b></h4>
+
+              <h4 class="ion-text-center centered " style="color: white;"><b>{{meal.title}}</b></h4>
+              <div class="ion-text-center">
+              </div>
+            </div>
+          </ion-card>
+          <ion-row class="test">
+          </ion-row>
+          </div>
+
+          <ion-progress-bar></ion-progress-bar>
+        </ion-col>
+
+  </ion-row>
+
+
+  <ion-row>
+  </ion-row>
+
+
+
+
 </ion-content>
