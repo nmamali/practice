@@ -1,34 +1,224 @@
-<ion-header>
+<ion-header *ngIf="!custom && !isBusket">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button  (click)="dismiss()" defaultHref="/display-meal-selection;">
 
+      </ion-back-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-button  (click)="changeCustom()">
+        Switch to Custom
+      </ion-button>
+    </ion-buttons>
     <ion-title>{{meal.name}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="!custom && !isBusket">
+  <ion-card>
+    <ion-card-header no-padding no-margin>
+      <ion-card-title no-padding no-margin>
+        <ion-img [src]="meal.imgUrl" no-padding no-margin></ion-img>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content no-padding>
+        <ion-col size="12" class="ion-text-center">
+          <ion-card-title no-padding no-margin style="font-size: large">{{meal.name}}</ion-card-title>
+        </ion-col>
+    </ion-card-content>
+    <div class="accordion" id="accordionExample">
+      <div class="card">
+        <div class="card-header text-center" id="headingOne" style="background-color: gainsboro; border-radius: 10px; color: black">
 
-<!--  <ion-card>-->
-<!--    <ion-card-header no-padding no-margin>-->
-<!--      <ion-card-title no-padding no-margin>-->
-<!--        <ion-img [src]="meal.imgUrl" no-padding no-margin></ion-img>-->
-<!--      </ion-card-title>-->
-<!--    </ion-card-header>-->
-<!--    <ion-card-content no-padding>-->
-<!--      <ion-row>-->
-<!--        <ion-col size="12" class="ion-text-center">-->
-<!--          <ion-card-title no-padding no-margin style="font-size: large">{{meal.name}}</ion-card-title>-->
-<!--        </ion-col>-->
-<!--      </ion-row>-->
-<!--    </ion-card-content>-->
-<!-- -->
+          <h5>Add Extra</h5>
+        </div>
 
-<!--  </ion-card>-->
-
-  <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
-    <mat-button-toggle value="bold">Bold</mat-button-toggle>
-  </mat-button-toggle-group>
-
+        <div>
+          <div class="card-body" *ngIf="show">
+            <ion-list>
+              <ion-item *ngFor="let entry of extras">
+                <ion-label>{{entry.val}}</ion-label>
+                <ion-checkbox slot="start" [(ngModel)]="entry.isChecked" (ngModelChange)="entry.isChecked = !entry.isChecked"></ion-checkbox>
+                  <div class="pull-right">
+                    <ion-badge style="background-color:green !important;">
+                      + R{{entry.extraPrice}}
+                    </ion-badge>
+                  </div>
+              </ion-item>
+            </ion-list>
+          </div>
+        </div>
+      </div>
 
 
+      <div class="card">
+        <div class="card-header text-center" style="background-color: gainsboro; border-radius: 10px; color: black">
 
+          <h5>Special Instructions</h5>
+        </div>
+
+        <div>
+          <div class="card-body">
+            <h5>{{meal.description}} </h5>
+          </div>
+        </div>
+        <!-- with name set -->
+        <ion-item>
+          <ion-input type="text" name="title" placeholder="leave notes for the kitchen"></ion-input>
+        </ion-item>
+      </div>
+
+      <br/>
+      <div class="text-center" no-margin>
+
+        <ion-button fill="outline" (click)="decreaseQuantity()">
+          <ion-icon slot="icon-only" name="remove"></ion-icon>
+        </ion-button>
+
+        &nbsp;&nbsp;<ion-label style="zoom:1.5;">{{quantity}}</ion-label>&nbsp;&nbsp;
+
+        <ion-button fill="outline" (click)="increaseQuantity()">
+          <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
+
+      </div>
+      <ion-col size="12" class="ion-text-center" no-margin no-padding>
+        <ion-item>
+          Total: <span slot="end"><ion-badge style="background-color: green">{{ 105 | currency:'ZAR':'symbol' }}</ion-badge></span>
+        </ion-item>
+        <ion-button expand="block" (click)="addToCard(meal)">Add to Oder
+        </ion-button>
+      </ion-col>
+    </div>
+
+  </ion-card>
+
+</ion-content>
+
+<ion-header *ngIf="custom && !isBusket">
+  <ion-toolbar>
+    <ion-title>
+      Create Custom Meal
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button  (click)="changeCustom()">
+        Switch to Original
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content forceOverscroll="false" *ngIf="custom && !isBusket">
+  <ion-grid>
+
+
+    <ion-row no-padding class="matrix">
+      <ion-col size="6" class="q1">
+        <div class="q-header"><b>Selected Ingredients</b></div>
+        <ion-list dragula="mealBusket" [(dragulaModel)]="selectedIngridients" lines="none" no-padding no-margin>
+          <ion-item *ngFor="let item of selectedIngridients" [color]="item.color" expand="block" text-wrap no-padding no-margin>
+            <ion-thumbnail slot="start" *ngIf="item.name !==''">
+              <img [src]="item.imgUrl">
+            </ion-thumbnail>
+            <ion-label> {{ item.name }}
+            </ion-label>
+
+          </ion-item>
+        </ion-list>
+      </ion-col>
+
+      <ion-col size="6" class="q2" >
+        <div class="q-header"><b>Ingredients</b></div>
+        <ion-list dragula="mealBusket" [(dragulaModel)]="ingridients" lines="none" no-padding no-margin>
+          <ion-item *ngFor="let item of ingridients" [color]="item.color" expand="block" text-wrap no-padding no-margin>
+            <ion-thumbnail slot="start">
+              <img [src]="item.imgUrl">
+            </ion-thumbnail>
+            <ion-label> {{ item.name }}
+            </ion-label>
+
+          </ion-item>
+        </ion-list>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+  <br/>
+
+  <div class="text-center" no-margin>
+    <ion-button fill="outline"  (click)="decreaseQuantity()" >
+      <ion-icon slot="icon-only" name="remove"></ion-icon>
+    </ion-button>
+    &nbsp;&nbsp;<ion-label style="zoom:1.5;" >{{quantity}}</ion-label>&nbsp;&nbsp;
+    <ion-button fill="outline"  (click)="increaseQuantity()">
+      <ion-icon slot="icon-only" name="add"></ion-icon>
+    </ion-button>
+  </div>
+
+  <ion-col size="12" class="ion-text-center" no-margin no-padding>
+    <ion-item>
+      Total: <span slot="end"><ion-badge style="background-color: green">{{ 105 | currency:'ZAR':'symbol' }}</ion-badge></span>
+    </ion-item>
+    <ion-button expand="block" (click)="addToCard()">Add to Oder
+    </ion-button>
+
+
+  </ion-col>
+
+</ion-content>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ion-header *ngIf="isBusket && (!custom || custom)">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button  (click)="dismiss()" defaultHref="/display-meal-selection;">
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      My Meal
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="isBusket && (!custom || custom)" >
+
+    <ion-list>
+      <ion-item *ngFor="let item of oderData" lines="inset">
+        <ion-thumbnail slot="start" *ngIf="item.name !==''">
+          <img [src]="item.imgUrl">
+        </ion-thumbnail>
+        <ion-label> {{ item.name }}
+        </ion-label>
+        <div class="pull-right">
+          <ion-badge style="background-color:green !important;">
+            {{ item.price | currency:'ZAR':'symbol' }}
+          </ion-badge>
+        </div>
+      </ion-item>
+
+
+    </ion-list>
+  <ion-col size="12" class="ion-text-center" no-margin no-padding>
+    <ion-item>
+      Total: <span slot="end"><ion-badge style="background-color: green">{{ 105 | currency:'ZAR':'symbol' }}</ion-badge></span>
+    </ion-item>
+    <ion-button expand="block" >Oder Now
+    </ion-button>
+  </ion-col>
 </ion-content>

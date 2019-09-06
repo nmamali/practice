@@ -5,98 +5,90 @@
 
       </ion-back-button>
     </ion-buttons>
+<!--    <ion-icon name="cart" style="zoom: 2.5" color="primary" (click)="showBusket()" slot="end" ></ion-icon>-->
+    <ion-buttons slot="end">
+      <ion-button (click)="showBusket()">
+        <ion-badge>{{1}}</ion-badge>
+        <ion-icon slot="icon-only" name="cart"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title>{{meals.title}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-<ion-row>
-
-</ion-row>
+  <div class="text-right" style="padding-right: 18px">
 
 
-  <ion-row *ngIf="true">
+<!--    <ion-icon name="cart" style="zoom: 3.0" color="primary" (click)="showFilter()"></ion-icon>-->
+<!--    <ion-icon name="options" style="zoom: 3.0" color="primary" (click)="showFilter()"></ion-icon>-->
+  </div>
+
+<!--  <ion-row *ngIf="filter" >-->
+  <ion-row>
+
+
     <ion-col size="12">
-      <ion-searchbar  style="border-radius: 20px !important;">
+      <ion-searchbar  style="border-radius: 20px !important;" (input)="filterList($event)">
       </ion-searchbar>
     </ion-col>
-<ion-col>
-  <ion-item >
-    <ion-label>
-      <p>Price Range:</p>
-    </ion-label>
-    <ion-select multiple="true" id="multiValue">
-      <ion-select-option value="1000">
-        R0 - R50
-      </ion-select-option>
-      <ion-select-option value="1001">
-        R51 - R100
 
-      </ion-select-option>
-      <ion-select-option value="1002">
-        R100 - R150
+    <ion-col>
+          <ion-item>
+            <ion-label>Estimated Time:</ion-label>
 
-      </ion-select-option>
-      <ion-select-option value="1003">
-        R150 - R200
-      </ion-select-option>
-    </ion-select>
-  </ion-item>
-</ion-col>
-<ion-col size="12">
-    <ion-item>
-      <ion-label>
-        <p>Estimated Time:</p>
-      </ion-label>
-      <ion-select multiple="true" >
-        <ion-select-option value="1000">
-          0 min - 10 min
-        </ion-select-option>
-        <ion-select-option value="1001">
-          10 min - 20 min
-        </ion-select-option>
-        <ion-select-option value="1002">
-          20 min - 30 min
-        </ion-select-option>
-        <ion-select-option value="1003">
-          30 min - 1hour
-        </ion-select-option>
-      </ion-select>
-    </ion-item>
-</ion-col>
+            <ionic-selectable
+                    #selectComponet
+                    [(ngModel)]="selecttedTime"
+                    [items]="extimatedTime"
+                    itemValueField="id"
+                    itemTextField="time"
+                    searchFailText="Nothing Found"
+                    [hasInfiniteScroll]="true"
+                    [canClear]="true"
+                    [canSearch]="true"
+                    (onChange)="estimatedTime(selecttedTime)"
+            >
 
-<ion-col>
-  <ion-item>
-    <ion-label style="color: grey">Show Vegiterian</ion-label>
-    <ion-toggle checked="true"></ion-toggle>
-  </ion-item>
-</ion-col>
+            </ionic-selectable>
+
+          </ion-item>
+            <ion-item>
+              <ion-label>Only Vegiterian</ion-label>
+              <ion-toggle [(ngModel)]="toggleValue" (ionChange)="filterMealType(toggleValue)"></ion-toggle>
+            </ion-item>
+    </ion-col>
+
   </ion-row>
 
-  <ion-grid fixed>
-    <ion-row no-padding no-margin>
-      <ion-col size="6" *ngFor="let meal of catergoryMeals" no-padding no-margin>
-        <ion-card style="padding=3px !important; margin:3px !important;" (click)="presentModal(meal)">
+
+    <ion-row  no-margin>
+      <ion-col size="6" *ngFor="let meal of goalList" no-padding no-margin>
+        <ion-card  (click)="presentModal(meal)">
           <ion-card-header no-padding no-margin>
-            <ion-img class='image' [src]="meal.imgUrl" no-padding no-margin>
-            </ion-img>
+            <img  src= {{meal.imgUrl}} style="height: 200px !important;" >
           </ion-card-header>
           <ion-card-content>
 
             <div class="ion-text-center">
               <ion-card-title no-padding no-margin style="font-size: large"> {{meal.name}}</ion-card-title><br>
               {{meal.description}}<br>
-              <ion-badge style="background-color:green !important;">
-               <h4>R{{meal.price}}</h4>
+
+          <ion-badge style="background-color:green !important;">
+               <h3>{{ meal.price | currency:'ZAR':'symbol' }}</h3>
               </ion-badge>
             </div>
           </ion-card-content>
-
-          <ion-label></ion-label>
         </ion-card>
       </ion-col>
     </ion-row>
 
-  </ion-grid>
+    <ion-card *ngIf="goalList.length===0">
+      <ion-card-content class="ion-text-center">
+        <ion-icon name="search" style="zoom:3.0;"></ion-icon>
+        <h1>Nothing Found</h1>
+      </ion-card-content>
+    </ion-card>
+
 </ion-content>
 

@@ -20,14 +20,37 @@ export class Tab1Page {
   };
   public meals;
   public mealsCatergory;
+  private goalList: any;
+  private loadedGoalList: any;
   constructor(mealsService: MealsService, public navCtr: NavController, private router: Router) {
      this.meals = mealsService.getAllMeals();
      this.mealsCatergory = mealsService.getAllMealCatergory();
+     this.goalList = this.mealsCatergory;
+     this.loadedGoalList = this.mealsCatergory;
 
   }
   visitPage(meal){
     this.router.navigate(['/display-meal-selection', {id: meal.id}]);
 
+  }
+
+  initializeItems(): void {
+    this.goalList = this.loadedGoalList;
+  }
+  filterList(evt) {
+    this.initializeItems();
+    const searchTerm = evt.srcElement.value;
+    if (!searchTerm) {
+      return;
+    }
+    this.goalList = this.goalList.filter(currentGoal => {
+      if ((currentGoal.title) && searchTerm) {
+        if (currentGoal.title.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1)  {
+          return true;
+        }
+        return false;
+      }
+    });
   }
 
 }

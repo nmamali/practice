@@ -2,12 +2,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
+import { IonicSelectableModule } from 'ionic-selectable';
 
 import { IonicModule } from '@ionic/angular';
 
 import { DisplayMealSelectionPage } from './display-meal-selection.page';
 import {ModalPagePage} from './modal-page/modal-page.page';
 import {MatExpansionModule} from '@angular/material';
+import {DragulaModule} from 'ng2-dragula';
 
 const routes: Routes = [
   {
@@ -17,13 +19,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RouterModule.forChild(routes),
-    MatExpansionModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        RouterModule.forChild(routes),
+        MatExpansionModule,
+        DragulaModule,
+        IonicSelectableModule
+    ],
   declarations: [DisplayMealSelectionPage, ModalPagePage],
   entryComponents: [ ModalPagePage]
 

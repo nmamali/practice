@@ -18,6 +18,8 @@
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 1120px;
+  background: rgba(0,0,0,0.3) !important;
+  width: 100% !important;
 
 }
 .centered2 {
@@ -25,6 +27,10 @@
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
+  color: white !important;
+  font-size: 42px;
+  font-weight: bold;
+  font-family: 'sans-serif';
 }
 .bottom-right {
   position: absolute;
@@ -37,4 +43,24 @@
   background-color: green !important;
   color: green !important;
 
+}
+
+//.img-opacity {
+//  -o-object-fit: cover;
+//  object-fit: cover;
+//  opacity: 0.6;
+//  z-index: 10;
+//  background: #0bb8cc;
+//  //background-color: rgba(162, 17, 54, 0.83);
+//}
+
+.background {
+  background: url("https://sethlui.com/wp-content/uploads/2013/10/singapore-food-05058016.jpg");
+  height: 200px;
+  width: 200px;
+}
+.layer {
+  background-color: rgba(50, 50, 50, 0.7) !important;
+  width: 100%;
+  height: 100%;
 }
