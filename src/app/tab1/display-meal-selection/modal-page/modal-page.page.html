@@ -1,4 +1,4 @@
-<ion-header *ngIf="!custom && !isBusket">
+<ion-header *ngIf="!custom && !isBusket && !oderStatus">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button  (click)="dismiss()" defaultHref="/display-meal-selection;">
@@ -8,20 +8,20 @@
 
     <ion-buttons slot="end">
       <ion-button  (click)="changeCustom()">
-        Switch to Custom
+        Remove Ingredients
       </ion-button>
     </ion-buttons>
-    <ion-title>{{meal.name}}</ion-title>
   </ion-toolbar>
 </ion-header>
-
-<ion-content *ngIf="!custom && !isBusket">
+<ion-content *ngIf="!custom && !isBusket && !oderStatus">
   <ion-card>
     <ion-card-header no-padding no-margin>
-      <ion-card-title no-padding no-margin>
-        <ion-img [src]="meal.imgUrl" no-padding no-margin></ion-img>
-      </ion-card-title>
+      <ion-img [src]="meal.imgUrl" no-padding no-margin ></ion-img>
     </ion-card-header>
+
+
+
+
     <ion-card-content no-padding>
         <ion-col size="12" class="ion-text-center">
           <ion-card-title no-padding no-margin style="font-size: large">{{meal.name}}</ion-card-title>
@@ -38,11 +38,11 @@
           <div class="card-body" *ngIf="show">
             <ion-list>
               <ion-item *ngFor="let entry of extras">
-                <ion-label>{{entry.val}}</ion-label>
-                <ion-checkbox slot="start" [(ngModel)]="entry.isChecked" (ngModelChange)="entry.isChecked = !entry.isChecked"></ion-checkbox>
+                <ion-label>{{entry.name}}</ion-label>
+                <ion-checkbox slot="start" (ionChange)="addedExtra(entry, $event)"></ion-checkbox>
                   <div class="pull-right">
                     <ion-badge style="background-color:green !important;">
-                      + R{{entry.extraPrice}}
+                     + {{ entry.extraPrice | currency:'R':'symbol' }}
                     </ion-badge>
                   </div>
               </ion-item>
@@ -50,7 +50,6 @@
           </div>
         </div>
       </div>
-
 
       <div class="card">
         <div class="card-header text-center" style="background-color: gainsboro; border-radius: 10px; color: black">
@@ -65,7 +64,8 @@
         </div>
         <!-- with name set -->
         <ion-item>
-          <ion-input type="text" name="title" placeholder="leave notes for the kitchen"></ion-input>
+          <ion-input  name="title" placeholder="leave notes for the kitchen" [(ngModel)]="instraction"></ion-input>
+
         </ion-item>
       </div>
 
@@ -75,7 +75,6 @@
         <ion-button fill="outline" (click)="decreaseQuantity()">
           <ion-icon slot="icon-only" name="remove"></ion-icon>
         </ion-button>
-
         &nbsp;&nbsp;<ion-label style="zoom:1.5;">{{quantity}}</ion-label>&nbsp;&nbsp;
 
         <ion-button fill="outline" (click)="increaseQuantity()">
@@ -85,10 +84,18 @@
       </div>
       <ion-col size="12" class="ion-text-center" no-margin no-padding>
         <ion-item>
-          Total: <span slot="end"><ion-badge style="background-color: green">{{ 105 | currency:'ZAR':'symbol' }}</ion-badge></span>
+          Total: <label slot="end"><ion-badge style="background-color: green">{{ totalPrice + extraPrice | currency:'R':'symbol' }}</ion-badge></label>
         </ion-item>
-        <ion-button expand="block" (click)="addToCard(meal)">Add to Oder
-        </ion-button>
+
+        <br/>
+        <div class="text-center">
+          <button class="btn btn-primary save_close_button" (click)="addToCard(meal)">Add to Oder</button>
+          &nbsp;
+          <button class="btn btn-danger save_close_button" (click)="dismiss()" >Close</button>
+        </div>
+        <br/>
+
+
       </ion-col>
     </div>
 
@@ -103,7 +110,7 @@
     </ion-title>
     <ion-buttons slot="end">
       <ion-button  (click)="changeCustom()">
-        Switch to Original
+        Done
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -115,7 +122,7 @@
 
     <ion-row no-padding class="matrix">
       <ion-col size="6" class="q1">
-        <div class="q-header"><b>Selected Ingredients</b></div>
+        <div class="q-header"><b>Selected Ingredients({{selectedIngridients.length}})</b></div>
         <ion-list dragula="mealBusket" [(dragulaModel)]="selectedIngridients" lines="none" no-padding no-margin>
           <ion-item *ngFor="let item of selectedIngridients" [color]="item.color" expand="block" text-wrap no-padding no-margin>
             <ion-thumbnail slot="start" *ngIf="item.name !==''">
@@ -129,7 +136,7 @@
       </ion-col>
 
       <ion-col size="6" class="q2" >
-        <div class="q-header"><b>Ingredients</b></div>
+        <div class="q-header"><b>Removed Ingredients({{ingridients.length}})</b></div>
         <ion-list dragula="mealBusket" [(dragulaModel)]="ingridients" lines="none" no-padding no-margin>
           <ion-item *ngFor="let item of ingridients" [color]="item.color" expand="block" text-wrap no-padding no-margin>
             <ion-thumbnail slot="start">
@@ -144,46 +151,9 @@
 
     </ion-row>
   </ion-grid>
-
-  <br/>
-
-  <div class="text-center" no-margin>
-    <ion-button fill="outline"  (click)="decreaseQuantity()" >
-      <ion-icon slot="icon-only" name="remove"></ion-icon>
-    </ion-button>
-    &nbsp;&nbsp;<ion-label style="zoom:1.5;" >{{quantity}}</ion-label>&nbsp;&nbsp;
-    <ion-button fill="outline"  (click)="increaseQuantity()">
-      <ion-icon slot="icon-only" name="add"></ion-icon>
-    </ion-button>
-  </div>
-
-  <ion-col size="12" class="ion-text-center" no-margin no-padding>
-    <ion-item>
-      Total: <span slot="end"><ion-badge style="background-color: green">{{ 105 | currency:'ZAR':'symbol' }}</ion-badge></span>
-    </ion-item>
-    <ion-button expand="block" (click)="addToCard()">Add to Oder
-    </ion-button>
-
-
-  </ion-col>
-
 </ion-content>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<ion-header *ngIf="isBusket && (!custom || custom)">
+<ion-header *ngIf="isBusket && (!custom)">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button  (click)="dismiss()" defaultHref="/display-meal-selection;">
@@ -196,29 +166,163 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="isBusket && (!custom || custom)" >
-
+<ion-content *ngIf="isBusket && (!custom)" >
     <ion-list>
       <ion-item *ngFor="let item of oderData" lines="inset">
         <ion-thumbnail slot="start" *ngIf="item.name !==''">
           <img [src]="item.imgUrl">
         </ion-thumbnail>
-        <ion-label> {{ item.name }}
-        </ion-label>
-        <div class="pull-right">
+        <ion-label> {{ item.name }} × {{item.quantity}}<br>
+
           <ion-badge style="background-color:green !important;">
-            {{ item.price | currency:'ZAR':'symbol' }}
-          </ion-badge>
+            {{ item.totalPrice | currency:'R':'symbol' }}
+          </ion-badge><br/>
+        </ion-label>
+
+        <div class="pull-right">
+
+          <ion-icon name="close-circle" color="danger" style="zoom:1.7 !important;" (click)="removeOder(item)"></ion-icon>
         </div>
       </ion-item>
-
 
     </ion-list>
   <ion-col size="12" class="ion-text-center" no-margin no-padding>
     <ion-item>
-      Total: <span slot="end"><ion-badge style="background-color: green">{{ 105 | currency:'ZAR':'symbol' }}</ion-badge></span>
+      Total: <label slot="end"><ion-badge style="background-color: green ;zoom:1.2 !important; ">{{ totalPrice | currency:'R':'symbol' }}</ion-badge></label>
     </ion-item>
-    <ion-button expand="block" >Oder Now
-    </ion-button>
+    <br/>
+    <div class="text-center">
+      <button class="btn btn-primary save_close_button" (click)="showOderStatus()">Oder Now</button>
+      &nbsp;
+      <button class="btn btn-danger save_close_button" (click)="dismiss()" >Close</button>
+
+    </div>
+    <br/>
   </ion-col>
+
+  </ion-content>
+
+
+<!--Oder status and summary  -->
+<ion-header *ngIf="oderStatus">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button  (click)="dismiss()" defaultHref="/display-meal-selection;">
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Oder Details and Status
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="oderStatus" >
+
+
+  <ion-card>
+    <ion-card-content *ngIf="minutes!== 0 || seconds!==0" class="text-center">
+
+      <div  no-margin no-padding>
+        <div class="container">
+          <div class="balloon white" >
+            <div class="star-red"></div>
+            <div class="face">
+              <div class="eye"></div>
+              <div class="mouth happy"></div>
+            </div>
+            <div class="triangle"></div>
+            <div class="string"></div>
+          </div>
+
+          <div class="balloon red">
+            <div class="star"></div>
+            <div class="face">
+              <div class="eye"></div>
+              <div class="mouth happy"></div>
+            </div>
+            <div class="triangle"></div>
+            <div class="string"></div>
+          </div>
+
+          <div class="balloon blue">
+            <div class="star"></div>
+            <div class="face">
+              <div class="eye"></div>
+              <div class="mouth happy"></div>
+            </div>
+            <div class="triangle"></div>
+            <div class="string"></div>
+          </div>
+
+          <div id="timer" style="margin-right: 100px !important;">
+
+            <div class="hours">
+              <div class="numbers">
+                0{{0}}
+              </div>
+              <label style="color: white !important;">Hours</label>
+            </div>
+
+            &nbsp;
+
+            <div class="minutes">
+              <div class="numbers">
+                {{minutes}}
+              </div>
+
+              <label style="color: white !important;">Minutes</label>
+
+            </div>
+            &nbsp;
+
+            <div class="seconds">
+              <div class="numbers">
+                {{seconds}}
+              </div>
+              <label style="color: white !important;">Seconds</label>
+
+
+            </div>
+          </div>
+        </div>
+
+
+        <ion-item>
+          <label>Table Number</label>
+          <label slot="end">
+             5
+          </label>
+        </ion-item>
+        <ion-item>
+          <label>Total</label>
+          <label slot="end">
+            <label slot="end"><ion-badge style="background-color: green ;zoom:1.2 !important; ">{{ totalPrice | currency:'R':'symbol' }}</ion-badge></label>
+
+          </label>
+        </ion-item>
+        <br/>
+        <div class="text-center">&nbsp;
+          <button class="btn btn-danger save_close_button" (click)="hideTimer()">Close</button>
+        </div>
+
+
+        <br/>
+
+      </div>
+
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+      <ion-card-content *ngIf="minutes=== 0 && seconds===0">
+<!--                  <h2 style="color: #276FBF !important; font-weight: bold !important; padding: 0px; margin: 0px" class="text-center">Enjoy your Meal!</h2>-->
+        <img src="https://i.pinimg.com/originals/ab/c6/d0/abc6d090276b5ac6b4ad98f60ad83759.gif" height=364 />
+        <div class="text-center">&nbsp;
+          <button class="btn btn-danger save_close_button">Close</button>
+        </div>
+
+      </ion-card-content>
+  </ion-card>
+
+
 </ion-content>

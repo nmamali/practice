@@ -1,31 +1,25 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button  defaultHref="tabs">
-
-      </ion-back-button>
+    <ion-buttons slot="start" (click)="goBack()">
+      <ion-icon ios="ios-arrow-back" md="md-arrow-back" style="zoom:1.7" color="primary"></ion-icon> <span style="color:dodgerblue;">Back</span>
     </ion-buttons>
-<!--    <ion-icon name="cart" style="zoom: 2.5" color="primary" (click)="showBusket()" slot="end" ></ion-icon>-->
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" *ngIf="busket.length>0 && !oderModalOpen">
       <ion-button (click)="showBusket()">
-        <ion-badge>{{1}}</ion-badge>
+        <ion-badge style="background-color: red">{{busket.length}}</ion-badge>
         <ion-icon slot="icon-only" name="cart"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>{{meals.title}}</ion-title>
+            <div *ngIf="showStatus" slot="end">
+                <ion-fab-button  slot="end" color="warning" ><span style="color: black !important;" (click)="viewStatus()">Status</span></ion-fab-button>
+            </div>
+    <ion-title>{{title}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="text-right" style="padding-right: 18px">
-
-
-<!--    <ion-icon name="cart" style="zoom: 3.0" color="primary" (click)="showFilter()"></ion-icon>-->
-<!--    <ion-icon name="options" style="zoom: 3.0" color="primary" (click)="showFilter()"></ion-icon>-->
   </div>
-
-<!--  <ion-row *ngIf="filter" >-->
-  <ion-row>
+    <ion-row>
 
 
     <ion-col size="12">
@@ -61,21 +55,26 @@
 
   </ion-row>
 
-
     <ion-row  no-margin>
-      <ion-col size="6" *ngFor="let meal of goalList" no-padding no-margin>
-        <ion-card  (click)="presentModal(meal)">
+      <ion-col size-sm='12' size='12' size-lg='6' size-md="6" *ngFor="let meal of goalList | paginate: { itemsPerPage: 4, currentPage: p }" no-padding no-margin>
+        <ion-card  (click)="presentModal(meal)" [disabled]="meal.isAvailable===0">
           <ion-card-header no-padding no-margin>
-            <img  src= {{meal.imgUrl}} style="height: 200px !important;" >
-          </ion-card-header>
-          <ion-card-content>
 
-            <div class="ion-text-center">
-              <ion-card-title no-padding no-margin style="font-size: large"> {{meal.name}}</ion-card-title><br>
+              <div class="top-left">
+                           <ion-badge style="background-color: yellow; zoom:1.4; color: black"  *ngIf="meal.isAvailable===0">
+                               Not Available
+                           </ion-badge>
+              </div>
+              <img  src= {{meal.imgUrl}} class="img-height" >
+          </ion-card-header>
+          <ion-card-content no-padding no-margin>
+
+            <div class="ion-text-center" no-padding no-margin>
+                <h6 no-padding no-margin style="font-size: large;"> <b>{{meal.name}}</b></h6>
               {{meal.description}}<br>
 
           <ion-badge style="background-color:green !important;">
-               <h3>{{ meal.price | currency:'ZAR':'symbol' }}</h3>
+               <h3>{{ meal.price | currency:'R':'symbol' }}</h3>
               </ion-badge>
             </div>
           </ion-card-content>
@@ -85,10 +84,24 @@
 
     <ion-card *ngIf="goalList.length===0">
       <ion-card-content class="ion-text-center">
-        <ion-icon name="search" style="zoom:3.0;"></ion-icon>
-        <h1>Nothing Found</h1>
+          <img src='https://cdn.dribbble.com/users/898770/screenshots/3744292/search-bar.gif'  height=364 alt="" />
+
       </ion-card-content>
     </ion-card>
 
+<ion-row *ngIf="goalList.length!==0">
+    <ion-col class="ion-text-center" size="11">
+        <pagination-controls
+                class="my-pagination"
+                (pageChange)="p = $event"
+        >
+        </pagination-controls>
+    </ion-col>
+<!--    <ion-col size="1" >-->
+<!--        <ion-fab vertical="bottom" horizontal="end" *ngIf="showStatus">-->
+<!--            <ion-fab-button color="warning" ><span style="color: black !important;" (click)="viewStatus()">Status</span></ion-fab-button>-->
+<!--        </ion-fab>-->
+<!--    </ion-col>-->
+</ion-row>
 </ion-content>
 

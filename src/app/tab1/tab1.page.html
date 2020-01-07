@@ -1,6 +1,6 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>
+<ion-header >
+  <ion-toolbar >
+    <ion-title class="text-center">
      Digital Menu
     </ion-title>
     <ion-buttons slot="start">
@@ -8,48 +8,41 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
 <ion-content>
-
+<ion-grid>
   <ion-row no-padding no-margin>
     <ion-searchbar (input)="filterList($event)" placeholder="Search by meal category">
     </ion-searchbar>
   </ion-row>
-
-  <ion-row style="border-width: 1px !important;" no-padding no-margin>
-  <ion-card style="margin: 11px; " >
-    <ion-slides style="max-height: 400px;background: rgba(0,0,0,0.9)" [options]="slideOpts">
-      <ion-slide *ngFor="let slide of meals" no-padding no-margin>
-        <img [src]="slide.url" no-padding no-margin >
-        <div class="ion-text-center centered-slider"></div>
-        <h3 class="ion-text-center centered2" >{{slide.title}}<br/>
-        </h3>
-
-
-
+  <ion-row class="row-spacing" no-margin>
+    <ion-row no-padding no-margin *ngIf="goalList.length!==0">
+      <ion-col size=12 align-self-start style="color:#3780FF; margin-bottom: -11px"  ><h5 (click)="allSpecial()">Today's Special</h5></ion-col>
+    </ion-row>
+    <ion-slides [options]="slideOpts"   *ngIf="goalList.length!==0">
+      <ion-slide *ngFor="let meal of meals" style="height: auto !important; background-color: black !important;" >
+        <div *ngIf="meal">
+          <ion-card no-padding no-margin>
+              <ion-card-content no-padding no-margin>
+                <img [src]="meal.imgUrl" no-padding no-margin  alt="" class="img-slider">
+              </ion-card-content>
+            <div class="ion-text-center centered-slider"></div>
+          </ion-card>
+        </div>
+        <h6 class="ion-text-center centered2" >{{meal.name}}</h6>
       </ion-slide>
-
-      <div class="icon">
-        <ion-badge color="primary">
-        </ion-badge>
-      </div>
-
     </ion-slides>
-
-  </ion-card >
   </ion-row>
-  <ion-row style="padding: 10px"  no-margin>
-        <ion-col size=12 align-self-start class="ion-text-center" ><h4>Our Meal Category</h4></ion-col>
+  <ion-row class="row-spacing" no-margin *ngIf="goalList.length!==0">
+        <ion-col size=12 align-self-start class="ion-text-center" ><h4> Meal Categories</h4></ion-col>
   </ion-row>
-  <ion-row no-margin style="padding: 10px" no-padding>
+  <ion-row no-margin class="row-spacing" >
         <ion-col size="6" *ngFor="let meal of goalList" no-padding >
           <div class="test" style="background: rgba(0,0,0,0.7) !important;">
           <ion-card no-margin no-padding style="border-radius: 0px; background-color: black" (click)="visitPage(meal)">
-            <img [src]="meal.url" style="max-height: 200px !important;"  >
+            <img [src]="meal.url"  alt="" class="img-category">
             <div style="margin-left: 11px !important; background-color: black" >
               <h4 class="ion-text-center centered-slider" style="background: rgba(0,0,0,0.7) !important;"><b></b></h4>
-
-              <h6 class="ion-text-center centered " style="color: white; font-size: 28px; font-family: 'sans-serif'; font-weight: bold">{{meal.title}}</h6>
+              <h4 class="ion-text-center centered " style="color: white; font-family: 'sans-serif'; font-weight: bold">{{meal.title}}</h4>
               <div class="ion-text-center">
               </div>
             </div>
@@ -57,26 +50,15 @@
           <ion-row class="test">
           </ion-row>
           </div>
-
           <ion-progress-bar></ion-progress-bar>
         </ion-col>
-
-
-
   </ion-row>
-
-
   <ion-row>
-
-
   </ion-row>
-
     <ion-card *ngIf="goalList.length===0">
       <ion-card-content class="ion-text-center">
-        <ion-icon name="search" style="zoom:3.0;"></ion-icon>
-        <h1>Nothing Found</h1>
+        <img src='https://cdn.dribbble.com/users/898770/screenshots/3744292/search-bar.gif'  height=364 alt="" />
       </ion-card-content>
     </ion-card>
-
-
+</ion-grid>
 </ion-content>

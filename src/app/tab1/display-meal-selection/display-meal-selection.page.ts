@@ -1,107 +1,85 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {MealsService} from '../../services/meals.service';
 import {ModalPagePage} from './modal-page/modal-page.page';
 import {ModalController, ToastController} from '@ionic/angular';
-import {IonicSelectableComponent} from 'ionic-selectable';
-
 @Component({
   selector: 'app-display-meal-selection',
   templateUrl: './display-meal-selection.page.html',
   styleUrls: ['./display-meal-selection.page.scss'],
 })
 export class DisplayMealSelectionPage implements OnInit {
-  sub;
-  meals;
-  catergoryMeals;
-  filter = false;
-  toggleValue = null;
-  extimatedTime = [
-    {
-      id: 0,
-      minValue: 0,
-      maxValue: 10,
-      time: 'less than 10 minutes'
-    },
-    {
-      id: 1,
-      time: 'less than 20 minutes',
-      minValue: 11,
-      maxValue: 20
-    },
-    {
-      id: 2,
-      time: 'less than 30 minutes',
-      minValue: 21,
-      maxValue: 30
-    },
-    {
-      id: 3,
-      time: 'More than 30 minutes',
-      minValue: 31,
-      maxValue: 100000000
-    }
-  ];
+  private sub;
+  private meals;
+  private catergoryMeals;
+  private toggleValue = null;
+  private extimatedTime;
+  private prices;
+  private selecttedTime = [];
+  private backUpList = [];
 
-  prices = [
-    {
-      priceRage: 'R0 - R50',
-      id: 0,
-      type: 'Framework'
-    },
-    {
-      priceRage: 'R51 - R100',
-      id: 1,
-      type: 'Framework'
-    },
-    {
-      priceRage: 'R101 - R150',
-      id: 3,
-      type: 'Language'
-    },
-    {
-      priceRage: 'R151 and above',
-      id: 4,
-      type: 'Language'
-    },
-  ];
-  selecttedPrice = null;
-  selecttedTime = [];
-  backUpList = [];
-  // Interesting part starts here
-  // @ts-ignore
-  // @ViewChild('selectComponent') selectComponent: IonicSelectableComponent;
-  toggle = true;
-  group = null;
-  selectedPriceList = [];
+  private selectedPriceList = [];
   private goalList: any;
   private loadedGoalList: any;
-    private filterByPrice: boolean;
+  private filterByPrice: boolean;
+  public busket = [];
+  public title;
+  p = 1;
+  private pageId;
+  private showStatus;
+  private oderModalOpen: boolean;
 
-  constructor(private route: ActivatedRoute, private mealService: MealsService, private modalController: ModalController, private toastController: ToastController) {
+    // tslint:disable-next-line:max-line-length
+  constructor(private router: Router, private route: ActivatedRoute, private mealService: MealsService, private modalController: ModalController, private toastController: ToastController) {
 
   }
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
-      this.meals = this.mealService.getMealCatergoryById(params.id);
-      this.catergoryMeals  = this.mealService.getAllMeal();
-      console.log(this.catergoryMeals );
-      this.goalList = this.catergoryMeals;
-      this.loadedGoalList = this.catergoryMeals;
-    });
+        this.showStatus = params.viewStatus;
+        if (params.id === '-1') {
+            // Specials
+            this.title = 'Meals on Special';
+            // this.meals = this.mealService.getMealCatergoryById(1);
+            this.catergoryMeals  = this.mealService.getAllMealsOnspecial();
+            this.loadedGoalList = this.catergoryMeals;
+            this.goalList = this.catergoryMeals;
+            this.pageId = '-1';
+            console.log('Ping!');
 
+        } else {
+            // meal category
+            this.meals = this.mealService.getAllMealsByCatergoryId(params.id);
+            this.mealService.getAllMeals().subscribe((meals) => {
+                this.meals = meals;
+                console.log(meals);
+            });
+            this.title = this.mealService.getMealCatergoryById(this.meals[0].catergoryId).title;
+            this.catergoryMeals  = this.meals;
+            this.loadedGoalList =   this.catergoryMeals;
+            this.goalList =   this.catergoryMeals;
+            this.pageId = params.id;
+
+        }
+    });
+    this.prices = this.mealService.getPriceRage();
+    this.extimatedTime = this.mealService.getEstimatedTime();
   }
 
   async presentModal(id) {
     const modal = await this.modalController.create({
       component: ModalPagePage,
-      componentProps: {value: id, id: this.meals.id, isBusket: false},
+      componentProps: {value: id, id: this.pageId, isBusket: false},
     });
-    await modal.present();
-  }
-  showFilter() {
-    this.filter = !this.filter;
+    modal.present();
+    modal.onDidDismiss().then(data => {
+          console.log('data came back from modal');
+          console.log(data);
+        this.oderModalOpen = false;
+        this.busket = this.mealService.getCart();
+
+    });
+
   }
   initializeItems(): void {
     this.goalList = this.loadedGoalList;
@@ -128,6 +106,8 @@ export class DisplayMealSelectionPage implements OnInit {
     if (!searchTerm) {
       if (this.toggleValue === true) {
         this.goalList = this.backUpList;
+      } else if (this.filterByPrice) {
+          this.goalList = this.selectedPriceList;
       } else {
         this.initializeItems();
       }
@@ -180,7 +160,6 @@ export class DisplayMealSelectionPage implements OnInit {
               this.goalList = this.backUpList;
           }
           const filteredMeal = [];
-          console.log(time);
           for (let i = 0; i < this.goalList.length; i++) {
               if (this.goalList[i].preparationDuration <= time.maxValue ) {
                   filteredMeal.push(this.goalList[i]);
@@ -202,24 +181,35 @@ export class DisplayMealSelectionPage implements OnInit {
     }
 
     async showBusket() {
-        console.log(this.mealService.getCart());
         if (this.mealService.getCart().length !== 0) {
+            this.oderModalOpen = true;
             const modal = await this.modalController.create({
                 component: ModalPagePage,
-                componentProps: {isBusket: true, id: this.meals.id, oderData: this.mealService.getCart() },
+                componentProps: {isBusket: true, id: this.pageId, oderData: this.mealService.getCart() },
             });
-            await modal.present();
-        } else {
-            this.toastController.create({
-                message: 'Basket is empty , create an oder first',
-                color: 'danger',
-                duration: 2000
-            }).then(toast => toast.present());
+             modal.present();
+            modal.onDidDismiss().then(data => {
+                console.log('data came back from modal busket');
+                this.oderModalOpen = false;
+                this.busket = this.mealService.getCart();
+
+            });
         }
-
-
-        return this.mealService.getCart();
-
     }
-
+    /**
+     *
+     * Goes back to HomePage
+     */
+    goBack() {
+        this.mealService.emptyCart();
+        this.router.navigate(['/tabs/tab1', {}]);
+    }
+    async viewStatus() {
+        const modal = await this.modalController.create({
+            component: ModalPagePage,
+            componentProps: {isBusket: false, id: this.pageId, oderData: null, showStatus: this.showStatus
+            },
+        });
+        await modal.present();
+    }
 }

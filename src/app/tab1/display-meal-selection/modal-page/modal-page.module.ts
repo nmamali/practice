@@ -6,7 +6,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { ModalPagePage } from './modal-page.page';
-// import {MaterialModule} from 'src/app/material.module';
 import {DragulaModule} from 'ng2-dragula';
 
 const routes: Routes = [
@@ -24,7 +23,7 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     DragulaModule
   ],
-  declarations: [ModalPagePage]
+  // declarations: [ModalPagePage]
 
 })
 export class ModalPagePageModule {}

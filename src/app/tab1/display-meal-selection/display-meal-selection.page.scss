@@ -3,3 +3,18 @@
   max-height: 10% !important;
 
 }
+.my-pagination {
+  background: red !important;
+
+}
+.top-left {
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  color: black !important;
+}
+.img-height{
+
+  height: calc(35vh - 50px) !important; // Height = 50% of screen - header height (56px)
+
+}

@@ -12,11 +12,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MaterialModule} from './material.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {DragulaModule} from 'ng2-dragula';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, BrowserAnimationsModule, MaterialModule, NgbModule.forRoot(), DragulaModule.forRoot()],
+  imports: [BrowserModule, HttpClientModule, IonicModule.forRoot(), AppRoutingModule, BrowserAnimationsModule, MaterialModule, NgbModule.forRoot(), DragulaModule.forRoot()],
   providers: [
     StatusBar,
     SplashScreen,

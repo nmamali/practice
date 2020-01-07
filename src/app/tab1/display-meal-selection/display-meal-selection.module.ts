@@ -10,6 +10,8 @@ import { DisplayMealSelectionPage } from './display-meal-selection.page';
 import {ModalPagePage} from './modal-page/modal-page.page';
 import {MatExpansionModule} from '@angular/material';
 import {DragulaModule} from 'ng2-dragula';
+import {NgxPaginationModule} from 'ngx-pagination'; // <-- import the module
+
 
 const routes: Routes = [
   {
@@ -26,7 +28,8 @@ const routes: Routes = [
         RouterModule.forChild(routes),
         MatExpansionModule,
         DragulaModule,
-        IonicSelectableModule
+        IonicSelectableModule,
+        NgxPaginationModule
     ],
   declarations: [DisplayMealSelectionPage, ModalPagePage],
   entryComponents: [ ModalPagePage]

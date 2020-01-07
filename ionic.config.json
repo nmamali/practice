@@ -1,5 +1,7 @@
 {
   "name": "DigitalMenuFinalae",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
